@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>gitlabui {% block title %}{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static',filename='favicon.svg') }}">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+
+<body class="d-flex flex-column h-100">
+
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static',filename='favicon.svg') }}" alt="" width="30"
+                     class="d-inline-block align-text-top mx-2">
+                {{ self.title() }}
+            </a>
+            <div class="d-flex">
+                {% block menu %}{% endblock %}
+            </div>
+        </div>
+    </nav>
+</header>
+
+{% block content %}{% endblock %}
+
+<footer class="footer mt-auto py-3">
+</footer>
+
+</body>
+
+</html>

@@ -1,1 +1,1 @@
-# gitlab-ui
+# gitlabui
