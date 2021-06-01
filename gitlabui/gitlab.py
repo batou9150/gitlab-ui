@@ -89,3 +89,19 @@ class GitlabApi:
             p['tag'] = res[0]['name']
             p['tag_created_at'] = res[0]['commit']['created_at'][0:10]
         return p
+
+    def version(self):
+        import pkg_resources
+
+        try:
+            version = pkg_resources.get_distribution('gitlabui').version
+        except pkg_resources.DistributionNotFound as e:
+            version = '0.0.0'
+            self.logger.error(e)
+
+        try:
+            gitlab = self.get('/version', timeout=5).json()
+        except Exception as e:
+            gitlab = {'error': str(e)}
+
+        return {'version': version, 'gitlab': gitlab}

@@ -26,3 +26,8 @@ def reset():
 def refresh_tags():
     api.refresh_tags()
     return redirect(url_for('tags'))
+
+
+@app.route('/version')
+def version():
+    return api.version()
