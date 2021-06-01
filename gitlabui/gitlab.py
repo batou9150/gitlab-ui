@@ -2,6 +2,7 @@ from requests import request
 import re
 import os
 import json
+import sys
 
 
 class GitlabApi:
@@ -29,7 +30,7 @@ class GitlabApi:
     def delete(self, path, **kwargs):
         return self.request('delete', path, **kwargs)
 
-    def get_projects(self, search=None, kind=None):
+    def get_projects(self, search=None, opts=None):
 
         if os.path.exists(self.db):
             self.logger.info('load from file')
@@ -55,8 +56,16 @@ class GitlabApi:
         if search:
             projects = [p for p in projects if re.search(search, p['path_with_namespace'], flags=re.IGNORECASE)]
 
-        if kind:
-            projects = [p for p in projects if p['namespace']['kind'] == kind]
+        if opts and 'kind' in opts:
+            projects = [p for p in projects if p['namespace']['kind'] == opts['kind']]
+
+        if opts and 'sortby' in opts:
+            sortby = opts['sortby']
+            is_desc = opts['sortbydirection'] == 'desc' if 'sortbydirection' in opts else False
+            default_value = "" if is_desc else chr(sys.maxunicode)
+            projects = sorted(projects,
+                              key=lambda p: p[sortby] if sortby in p else default_value,
+                              reverse=is_desc)
 
         return projects
 

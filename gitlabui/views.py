@@ -12,7 +12,7 @@ def index():
 def tags():
     return render_template('index.html', projects=api.get_projects(
         request.args.get('q'),
-        kind=request.args.get('kind')
+        opts=request.args
     ))
 
 

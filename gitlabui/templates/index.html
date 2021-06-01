@@ -4,11 +4,11 @@
 
 {% block menu %}
 <a class="btn btn-secondary me-2" href="{{ url_for('refresh_tags') }}" role="button"
- data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh tags">
+   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh tags">
     <i class="bi bi-arrow-repeat" style="color: white;"></i>
 </a>
 <a class="btn btn-dark" href="{{ url_for('reset') }}" role="button"
- data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset list of projects">
+   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Reset list of projects">
     <i class="bi bi-stars" style="color: white;"></i>
 </a>
 {% endblock %}
@@ -56,12 +56,27 @@
 
     <div class="row">
         <div class="col">
-            <table class="table">
+            <table id="table_tags" class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Project</th>
-                    <th scope="col">Tag</th>
-                    <th scope="col">At</th>
+                    <th id="path_with_namespace" scope="col">
+                        Project
+                        {% if request.args.get('sortby') == 'path_with_namespace' %}
+                        <i class="bi bi-sort-alpha-{% if request.args.get('sortbydirection') == 'desc' %}up{% else %}down{% endif %}"></i>
+                        {% endif %}
+                    </th>
+                    <th id="tag" scope="col">
+                        Tag
+                        {% if request.args.get('sortby') == 'tag' %}
+                        <i class="bi bi-sort-{% if request.args.get('sortbydirection') == 'asc' %}up{% else %}down{% endif %}"></i>
+                        {% endif %}
+                    </th>
+                    <th id="tag_created_at" scope="col">
+                        At
+                        {% if request.args.get('sortby') == 'tag_created_at' %}
+                        <i class="bi bi-sort-{% if request.args.get('sortbydirection') == 'asc' %}up{% else %}down{% endif %}"></i>
+                        {% endif %}
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -77,4 +92,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static',filename='index.js') }}"></script>
 {% endblock %}
