@@ -28,6 +28,20 @@ def refresh_tags():
     return redirect(url_for('tags'))
 
 
+@app.route('/search')
+def search():
+    if 'search' in request.args and 'filepath' in request.args and 'ref' in request.args:
+        return render_template('search.html', results=api.search(
+            request.args['search'],
+            request.args['filepath'],
+            request.args['ref'],
+            project_search=request.args.get('q'),
+            project_opts=request.args
+        ))
+    else:
+        return render_template('search.html')
+
+
 @app.route('/version')
 def version():
     return api.version()

@@ -20,6 +20,7 @@
         <div class="col">
             <form class="row row-cols-lg-auto g-3 align-items-center my-2" method="get">
                 <div class="col-12">
+                    <label for="q" class="form-label">Project</label>
                     <input type="text" class="form-control" id="q" name="q"
                            value="{{ request.args.get('q') if request.args.get('q') }}">
                 </div>
