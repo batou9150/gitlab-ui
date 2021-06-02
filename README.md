@@ -1,5 +1,8 @@
 # gitlabui
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/batou9150/gitlabui.svg)](https://hub.docker.com/r/batou9150/gitlabui/)
+[![Docker Stars](https://img.shields.io/docker/stars/batou9150/gitlabui.svg)](https://hub.docker.com/r/batou9150/gitlabui/) 
+
 ## Run the dev server
 ```shell
 python3 setup.py install
