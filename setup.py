@@ -7,6 +7,8 @@ with open('README.md') as f:
 
 setup(
     name='gitlabui',
+    version='1.0.1',
+    author='batou9150',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
@@ -14,7 +16,13 @@ setup(
         'requests',
         'flask'
     ],
-    version='1.0.0',
+    description="Flask App over Gitlab Api to browse projects tags and to search into repository files",
     long_description=readme,
-    author='batou9150'
+    long_description_content_type='text/markdown',
+    url="https://github.com/batou9150/gitlabui",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.6",
 )

@@ -1,35 +1,26 @@
 # gitlabui
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/batou9150/gitlabui.svg)](https://hub.docker.com/r/batou9150/gitlabui/)
-[![Docker Stars](https://img.shields.io/docker/stars/batou9150/gitlabui.svg)](https://hub.docker.com/r/batou9150/gitlabui/) 
+[![Docker Stars](https://img.shields.io/docker/stars/batou9150/gitlabui.svg)](https://hub.docker.com/r/batou9150/gitlabui/)
+[![pypi version](https://img.shields.io/pypi/v/gitlabui.svg)](https://pypi.org/project/gitlabui/)
 
-## Run the dev server
+Flask App over Gitlab Api to browse projects tags and to search into repository files
+
+## Installation
 ```shell
-python3 setup.py install
-python3 gitlabui-runner.py
+pip install gitlabui
 ```
 
-## Run the production server with gunicorn
+## Run Flask App
 
-See [Gunicorn configuration](https://docs.gunicorn.org/en/stable/configure.html) for production configuration.
-
-```bash
-python3 setup.py install
+### Run with gunicorn
+```shell
+export GITLAB_URL=http://localhost/api/v4
+export GITLAB_TOKEN=<YOUR_PRIVATE_TOKEN>
 gunicorn -b 0.0.0.0:5000 gitlabui:app
 ```
 
-### Gunicorn configuration file example
-```python
-import multiprocessing
-
-bind = "0.0.0.0:5000"
-workers = multiprocessing.cpu_count() * 2 + 1
-threads=2
-```
-
-Run with : `gunicorn -c conf.py gitlabui:app`
-
-## Run with docker
+### Run with docker
 ```shell
 docker run -d \
   -e GITLAB_URL=http://localhost/api/v4 \
