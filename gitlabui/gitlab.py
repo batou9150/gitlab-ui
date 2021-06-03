@@ -1,8 +1,10 @@
-from requests import request
-import re
-import os
 import json
+import os
+import re
 import sys
+import urllib.parse
+
+from requests import request
 
 
 class GitlabApi:
@@ -29,6 +31,9 @@ class GitlabApi:
 
     def delete(self, path, **kwargs):
         return self.request('delete', path, **kwargs)
+
+    def get_project(self, id_or_name):
+        return self.get('/projects/' + urllib.parse.quote_plus(id_or_name)).json()
 
     def get_projects(self, search=None, opts=None):
 
@@ -90,20 +95,24 @@ class GitlabApi:
             p['tag_created_at'] = res[0]['commit']['created_at'][0:10]
         return p
 
-    def search(self, search, filepath, ref, project_search=None, project_opts=None):
+    def get_repository_file_content(self, p, filepath, ref):
         import base64
-        import urllib.parse
+        url = '/projects/' + str(p['id']) + '/repository/files/' + urllib.parse.quote_plus(filepath) + '?ref=' + ref
+        file = self.get(url).json()
+        if 'content' in file:
+            return base64.b64decode(file['content']).decode('utf8')
+        else:
+            return None
+
+    def search(self, search, filepath, ref, project_search=None, project_opts=None):
         res = []
         for p in self.get_projects(project_search, project_opts):
-            url = '/projects/' + str(p['id']) + '/repository/files/' + urllib.parse.quote_plus(filepath) + '?ref=' + ref
-            file = self.get(url).json()
-            if 'content' in file:
-                content = base64.b64decode(file['content']).decode('utf8')
-                if re.search(search, content, flags=re.IGNORECASE):
-                    p['match'] = [line
-                                  for line in content.splitlines()
-                                  if re.search(search, line, flags=re.IGNORECASE)]
-                    res.append(p)
+            content = self.get_repository_file_content(p, filepath, ref)
+            if content and re.search(search, content, flags=re.IGNORECASE):
+                p['match'] = [line
+                              for line in content.splitlines()
+                              if re.search(search, line, flags=re.IGNORECASE)]
+                res.append(p)
         return res
 
     def version(self):
