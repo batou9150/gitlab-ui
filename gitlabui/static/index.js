@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('#table_tags tr th').click(function () {
+    $('#table_tags thead tr th').click(function () {
         var kids = $( this ).children("i");
         if (kids.length == 0){
             // trier

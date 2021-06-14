@@ -64,6 +64,9 @@ class GitlabApi:
         if opts and 'kind' in opts:
             projects = [p for p in projects if p['namespace']['kind'] == opts['kind']]
 
+        if opts and 'archived' in opts:
+            projects = [p for p in projects if p['archived'] == (opts['archived'].lower() == 'true')]
+
         if opts and 'sortby' in opts:
             sortby = opts['sortby']
             is_desc = opts['sortbydirection'] == 'desc' if 'sortbydirection' in opts else False

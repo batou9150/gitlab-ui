@@ -10,10 +10,11 @@ def index():
 
 @app.route('/tags')
 def tags():
-    return render_template('index.html', projects=api.get_projects(
-        request.args.get('q'),
-        opts=request.args
-    ))
+    projects = api.get_projects(request.args.get('q'), opts=request.args)
+    if request.args.get('format') == 'json':
+        return {'results': projects}
+    else:
+        return render_template('index.html', projects=projects)
 
 
 @app.route('/reset')
@@ -31,13 +32,17 @@ def refresh_tags():
 @app.route('/search')
 def search():
     if 'search' in request.args and 'filepath' in request.args and 'ref' in request.args:
-        return render_template('search.html', results=api.search(
+        results = api.search(
             request.args['search'],
             request.args['filepath'],
             request.args['ref'],
             project_search=request.args.get('q'),
             project_opts=request.args
-        ))
+        )
+        if request.args.get('format') == 'json':
+            return {'results': results}
+        else:
+            return render_template('search.html', results=results)
     else:
         return render_template('search.html')
 
