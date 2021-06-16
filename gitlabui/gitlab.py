@@ -77,7 +77,18 @@ class GitlabApi:
 
         return projects
 
-    def refresh_tags(self):
+    def refresh_tags(self, delta=None):
+        previous = self.get_refresh_tags_time()
+        if previous is not None and delta is not None:
+            from datetime import datetime, timedelta
+            if type(delta) == str:
+                delta = int(delta)
+            if type(delta) == int:
+                delta = timedelta(seconds=delta)
+            current_delta = datetime.now() - datetime.fromisoformat(previous)
+            if current_delta < delta:
+                self.logger.info('skip refresh tags, current_delta = ' + str(current_delta))
+                return None
         projects = [self.get_latest_tag(p) for p in self.get_projects()]
         from datetime import datetime
         self.save(projects, datetime.now().isoformat(timespec='seconds'))

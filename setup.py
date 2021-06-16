@@ -7,7 +7,7 @@ with open('README.md') as f:
 
 setup(
     name='gitlabui',
-    version='1.0.5',
+    version='1.0.6',
     author='batou9150',
     packages=find_packages(),
     include_package_data=True,

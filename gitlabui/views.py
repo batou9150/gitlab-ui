@@ -26,7 +26,7 @@ def reset():
 
 @app.route('/refresh_tags')
 def refresh_tags():
-    api.refresh_tags()
+    api.refresh_tags(request.args.get('delta'))
     return redirect(url_for('tags'))
 
 
