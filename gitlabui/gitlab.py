@@ -4,18 +4,19 @@ import re
 import sys
 import urllib.parse
 
-from requests import request
+from requests_cache import CachedSession
 
 
 class GitlabApi:
-    def __init__(self, url, token, logger=None):
+    def __init__(self, url, token, logger=None, cache_expire_after=60):
         self.url = url
         self.token = token
         self.logger = logger
         self.db = './projects.json'
+        self.session = CachedSession(backend='memory', expire_after=cache_expire_after)
 
     def request(self, method, path, **kwargs):
-        return request(method, self.url + path, headers={'PRIVATE-TOKEN': self.token}, **kwargs)
+        return self.session.request(method, self.url + path, headers={'PRIVATE-TOKEN': self.token}, **kwargs)
 
     def get(self, path, **kwargs):
         return self.request('get', path, **kwargs)
@@ -40,7 +41,7 @@ class GitlabApi:
         if os.path.exists(self.db):
             self.logger.info('load from file')
             with open(self.db, 'r') as f:
-                projects = json.load(f)
+                projects = json.load(f)['projects']
         else:
             self.logger.info('load from api')
             page = 1
@@ -55,8 +56,7 @@ class GitlabApi:
 
             projects = sorted(projects, key=lambda p: p['path_with_namespace'])
 
-            with open(self.db, 'w') as f:
-                json.dump(projects, f)
+            self.save(projects)
 
         if search:
             projects = [p for p in projects if re.search(search, p['path_with_namespace'], flags=re.IGNORECASE)]
@@ -70,7 +70,7 @@ class GitlabApi:
         if opts and 'sortby' in opts:
             sortby = opts['sortby']
             is_desc = opts['sortbydirection'] == 'desc' if 'sortbydirection' in opts else False
-            default_value = "" if is_desc else chr(sys.maxunicode)
+            default_value = '' if is_desc else chr(sys.maxunicode)
             projects = sorted(projects,
                               key=lambda p: p[sortby] if sortby in p else default_value,
                               reverse=is_desc)
@@ -79,15 +79,26 @@ class GitlabApi:
 
     def refresh_tags(self):
         projects = [self.get_latest_tag(p) for p in self.get_projects()]
+        from datetime import datetime
+        self.save(projects, datetime.now().isoformat(timespec='seconds'))
 
-        with open(self.db, 'w') as f:
-            json.dump(projects, f)
+    def get_refresh_tags_time(self):
+        if os.path.exists(self.db):
+            with open(self.db, 'r') as f:
+                return json.load(f)['refresh_tags_time']
+        else:
+            return None
 
     def reset(self):
+        self.session.cache.clear()
         try:
             os.remove(self.db)
         except FileNotFoundError:
-            self.logger.debug("nothing to reset")
+            self.logger.debug('nothing to reset')
+
+    def save(self, projects, refresh_tags_time=None):
+        with open(self.db, 'w') as f:
+            json.dump({'refresh_tags_time': refresh_tags_time, 'projects': projects}, f)
 
     def get_latest_tag(self, p):
         res = self.get('/projects/' + str(p['id']) + '/repository/tags?order_by=name&search=^v').json()

@@ -4,7 +4,7 @@
 
 {% block menu %}
 <a class="btn btn-secondary me-2" href="{{ url_for('refresh_tags') }}" role="button"
-   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh tags">
+   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Previous refresh was at {{ refresh_tags_time }}">
     <i class="bi bi-arrow-repeat" style="color: white;"></i>
 </a>
 <a class="btn btn-dark" href="{{ url_for('reset') }}" role="button"

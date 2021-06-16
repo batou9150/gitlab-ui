@@ -11,10 +11,11 @@ def index():
 @app.route('/tags')
 def tags():
     projects = api.get_projects(request.args.get('q'), opts=request.args)
+    refresh_tags_time = api.get_refresh_tags_time()
     if request.args.get('format') == 'json':
-        return {'results': projects}
+        return {'refresh_tags_time': refresh_tags_time, 'results': projects}
     else:
-        return render_template('index.html', projects=projects)
+        return render_template('index.html', projects=projects, refresh_tags_time=refresh_tags_time)
 
 
 @app.route('/reset')
