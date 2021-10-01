@@ -113,6 +113,8 @@ class GitlabApi:
 
     def get_latest_tag(self, p):
         res = self.get('/projects/' + str(p['id']) + '/repository/tags?order_by=name&search=^v').json()
+        if type(res) == dict:
+            return p
         if len(res) == 0:
             res = self.get('/projects/' + str(p['id']) + '/repository/tags?order_by=name').json()
         if len(res) > 0:
